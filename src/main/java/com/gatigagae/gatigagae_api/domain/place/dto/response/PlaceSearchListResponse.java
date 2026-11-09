@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "반려동물 동반 가능 장소 검색 목록 응답")
 public record PlaceSearchListResponse(
 
-	@Schema(description = "알아들은 장소 종류. 종류 없이 장소를 잧으면 `ALL`, 해석하지 못하면 `null`", example = "CAFE")
+	@Schema(description = "알아들은 장소 종류. 종류 없이 장소를 찾으면 `ALL`, 해석하지 못하면 `null`", example = "CAFE")
 	PlaceCategory category,
 
 	@Schema(description = "가까운 순으로 최대 3곳")
