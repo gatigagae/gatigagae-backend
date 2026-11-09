@@ -19,6 +19,7 @@ services:
     image: nginx:1.27-alpine
     container_name: gatigagae-nginx
     restart: unless-stopped
+    command: [ "/bin/sh", "-c", "while :; do sleep 6h; nginx -s reload; done & exec /docker-entrypoint.sh nginx -g 'daemon off;'" ]
     ports:
       - "80:80"
       - "443:443"
