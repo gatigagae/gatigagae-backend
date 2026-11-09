@@ -1,20 +1,20 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '4.1.2'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '4.1.2'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.gatigagae'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
@@ -28,10 +28,19 @@ dependencies {
 
     // devtools
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
 
     // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0'
+
+    // http client
+    implementation 'org.springframework.boot:spring-boot-starter-restclient'
+
+    // validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     // lombok
     compileOnly 'org.projectlombok:lombok'
@@ -45,6 +54,10 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+tasks.named('bootJar') {
+    archiveFileName = 'app.jar'
+}
+
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
