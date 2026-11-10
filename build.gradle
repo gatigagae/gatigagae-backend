@@ -22,6 +22,9 @@ dependencies {
     // web
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 
+    // security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
     // database
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly 'org.postgresql:postgresql'
@@ -50,6 +53,7 @@ dependencies {
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.testcontainers:testcontainers-postgresql'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
