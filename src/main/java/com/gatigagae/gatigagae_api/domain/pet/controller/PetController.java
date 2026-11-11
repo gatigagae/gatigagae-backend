@@ -88,8 +88,8 @@ public class PetController {
 		return ApiResponse.onSuccess("QR 코드 상태 조회에 성공했습니다.", response);
 	}
 
-	@Operation(summary = "QR 코드로 반려견 조회", description = "웹에서 수정 화면을 채울 때 호출합니다.")
-	@GetMapping("/qr")
+	@Operation(summary = "QR 코드로 반려견 정보 조회", description = "웹에서 수정 화면을 채울 때 호출합니다.")
+	@GetMapping("/profile")
 	public ApiResponse<PetResponse> getPetByQrCode(
 		@Parameter(description = "QR 주소의 code 값") @RequestParam(required = false) String code
 	) {
@@ -98,8 +98,8 @@ public class PetController {
 		return ApiResponse.onSuccess("반려견 조회에 성공했습니다.", response);
 	}
 
-	@Operation(summary = "QR 코드로 반려견 저장", description = "웹에서 저장할 때 호출합니다.")
-	@PostMapping(value = "/qr", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@Operation(summary = "QR 코드로 반려견 정보 저장", description = "웹에서 저장할 때 호출합니다.")
+	@PostMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ApiResponse<PetResponse> savePetByQrCode(
 		@Parameter(description = "QR 주소의 code 값") @RequestParam(required = false) String code,
 		@Valid @ModelAttribute PetSaveRequest request
