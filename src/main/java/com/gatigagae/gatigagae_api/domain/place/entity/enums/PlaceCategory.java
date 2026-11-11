@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 public enum PlaceCategory {
 
 	CAFE(List.of("카페", "까페", "커피"), "FD", "FD05", Set.of()),
-	RESTAURANT(List.of("식당", "음식점", "밥집", "맛집", "밥먹"), "FD", null, Set.of("FD04", "FD05")),
+	RESTAURANT(List.of("식당", "음식점", "밥집", "맛집", "밥먹", "레스토랑", "배고"), "FD", null, Set.of("FD04", "FD05")),
 	PARK(List.of("공원", "산책"), "VE", "VE03", Set.of()),
 
 	// 종류를 말하지 않은 장소 요청
