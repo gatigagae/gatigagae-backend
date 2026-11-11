@@ -22,9 +22,16 @@ dependencies {
     // web
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 
+    // security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
     // database
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly 'org.postgresql:postgresql'
+
+    // S3
+    implementation platform('io.awspring.cloud:spring-cloud-aws-dependencies:4.0.2')
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3'
 
     // devtools
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -50,6 +57,7 @@ dependencies {
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.testcontainers:testcontainers-postgresql'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

@@ -20,6 +20,21 @@ spring:
       connect-timeout: 2s
       read-timeout: 3s
 
+  cloud:
+    aws:
+      region:
+        static: ${S3_REGION}
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 11MB
+
+app:
+  profile-page-url: ${SERVER_URL}/profile
+  s3:
+    bucket: ${S3_BUCKET}
+
 tour-api:
   service-key: ${TOUR_API_SERVICE_KEY}
 
