@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport">
+    <meta content="light" name="color-scheme">
+    <meta content="noindex" name="robots">
+    <meta content="no-referrer" name="referrer">
+    <title>반려견 프로필 | 같이가개</title>
+    <link href="/profile/profile.css" rel="stylesheet">
+</head>
+<body>
+<main class="page">
+    <section aria-live="polite" class="state" id="loading-view">
+        <div aria-hidden="true" class="spinner"></div>
+        <p class="state-text">불러오는 중이에요</p>
+    </section>
+
+    <section class="state" hidden id="message-view">
+        <p aria-hidden="true" class="state-icon" id="message-icon"></p>
+        <h1 class="state-title" id="message-title"></h1>
+        <p class="state-text" id="message-text"></p>
+        <button class="button primary state-button" hidden id="message-action" type="button">다시 시도</button>
+    </section>
+
+    <form hidden id="profile-form" novalidate>
+        <header class="header">
+            <p class="brand">같이가개</p>
+            <h1 class="title" id="form-title">반려견 프로필 수정</h1>
+            <p class="subtitle">저장하면 차량 화면에 바로 반영돼요.</p>
+        </header>
+
+        <section class="photo">
+            <div class="photo-frame" id="photo-frame">
+                <img alt="반려견 사진" class="photo-image" hidden id="photo-image">
+                <span aria-hidden="true" class="photo-placeholder">사진</span>
+            </div>
+            <button aria-describedby="error-photo" class="pill-button" id="photo-button" type="button">사진 변경 (촬영 · 앨범)
+            </button>
+            <input accept="image/jpeg,image/png,image/webp" hidden id="photo-input" type="file">
+            <p class="field-error" id="error-photo"></p>
+        </section>
+
+        <p class="section-label">기본 정보</p>
+
+        <div class="field">
+            <label class="label" for="name">이름 <span class="required">*</span></label>
+            <input aria-describedby="error-name" autocomplete="off" class="input" enterkeyhint="done" id="name"
+                   maxlength="50"
+                   type="text">
+            <p class="field-error" id="error-name"></p>
+        </div>
+
+        <div class="field">
+            <span class="label" id="breed-label">견종 <span class="required">*</span></span>
+            <button aria-describedby="error-breed" aria-haspopup="dialog" aria-labelledby="breed-label breed-value"
+                    class="select"
+                    id="breed-button" type="button">
+                <span class="select-value is-placeholder" id="breed-value">견종을 골라 주세요</span>
+                <svg aria-hidden="true" class="select-icon" viewBox="0 0 20 20">
+                    <path d="M5 7.5l5 5 5-5" fill="none" stroke="currentColor" stroke-linecap="round"
+                          stroke-linejoin="round" stroke-width="1.8"/>
+                </svg>
+            </button>
+            <input aria-describedby="error-customBreedName" aria-label="견종 이름 직접 입력" autocomplete="off"
+                   class="input sub-input" enterkeyhint="done"
+                   hidden id="custom-breed-name" maxlength="30"
+                   placeholder="견종 이름 직접 입력 (선택) 예: 믹스견" type="text">
+            <p class="field-error" id="error-breed"></p>
+            <p class="field-error" id="error-customBreedName"></p>
+        </div>
+
+        <div class="field">
+            <span class="label" id="coat-type-label">털 유형 <span class="required">*</span></span>
+            <div aria-describedby="error-coatType" aria-labelledby="coat-type-label" class="segmented" id="coat-type"
+                 role="group">
+                <button aria-pressed="false" class="segment" data-value="DOUBLE" type="button">이중모</button>
+                <button aria-pressed="false" class="segment" data-value="SINGLE" type="button">단일모</button>
+            </div>
+            <p class="field-error" id="error-coatType"></p>
+        </div>
+
+        <div class="field">
+            <span class="label" id="brachycephalic-label">단두종 여부 <span class="required">*</span></span>
+            <div aria-describedby="error-brachycephalic" aria-labelledby="brachycephalic-label" class="segmented"
+                 id="brachycephalic"
+                 role="group">
+                <button aria-pressed="false" class="segment" data-value="false" type="button">아니요</button>
+                <button aria-pressed="false" class="segment" data-value="true" type="button">예</button>
+            </div>
+            <p class="hint">이중모: 털이 두 겹 · 단두종: 코가 납작한 견종</p>
+            <p class="field-error" id="error-brachycephalic"></p>
+        </div>
+
+        <div class="field">
+            <label class="label" for="age">나이 <span class="required">*</span></label>
+            <div class="input-unit">
+                <input aria-describedby="age-hint error-age" autocomplete="off" class="input" enterkeyhint="done"
+                       id="age" inputmode="numeric"
+                       maxlength="2" type="text">
+                <span aria-hidden="true" class="unit">살</span>
+            </div>
+            <p class="field-error" id="error-age"></p>
+        </div>
+
+        <div class="field">
+            <label class="label" for="weight">몸무게 <span class="optional">(선택)</span></label>
+            <div class="input-unit">
+                <input aria-describedby="error-weight" autocomplete="off" class="input" enterkeyhint="done" id="weight"
+                       inputmode="decimal"
+                       maxlength="6" placeholder="예: 15" type="text">
+                <span aria-hidden="true" class="unit">kg</span>
+            </div>
+            <p class="field-error" id="error-weight"></p>
+        </div>
+
+        <div class="field">
+            <label class="label" for="note">특이사항 <span class="optional">(선택)</span></label>
+            <textarea aria-describedby="error-note" class="input textarea" id="note" maxlength="200"
+                      placeholder="예: 차멀미가 있어요, 더위에 약해요" rows="3"></textarea>
+            <p class="field-error" id="error-note"></p>
+        </div>
+
+        <section aria-labelledby="temperature-title" class="temperature">
+            <p class="temperature-title" id="temperature-title">맞춤 실내 온도</p>
+            <p aria-live="polite" class="temperature-value is-empty" id="temperature-value">—</p>
+            <p class="temperature-basis" id="temperature-basis"></p>
+            <p class="temperature-note">저장하면 차량이 정차 중일 때 이 온도로 공조를 맞춰요.</p>
+        </section>
+
+        <p class="form-error" id="form-error" role="alert"></p>
+
+        <div class="actions">
+            <button class="button secondary" disabled id="cancel-button" type="button">취소</button>
+            <button class="button primary" id="save-button" type="submit">저장</button>
+        </div>
+    </form>
+</main>
+
+<div class="sheet-backdrop" hidden id="breed-backdrop"></div>
+<section aria-labelledby="breed-sheet-title" aria-modal="true" class="sheet" hidden id="breed-sheet"
+         role="dialog" tabindex="-1">
+    <div aria-hidden="true" class="sheet-handle"></div>
+    <h2 class="sheet-title" id="breed-sheet-title">견종 선택</h2>
+    <input aria-label="견종 검색" autocomplete="off" class="input" enterkeyhint="search" id="breed-search"
+           placeholder="견종 검색" type="search">
+    <ul class="breed-list" id="breed-list"></ul>
+    <p class="breed-empty" hidden id="breed-empty">찾는 견종이 없으면 '목록에 없어요'를 골라 주세요.</p>
+</section>
+
+<script src="/profile/profile.js"></script>
+</body>
+</html>

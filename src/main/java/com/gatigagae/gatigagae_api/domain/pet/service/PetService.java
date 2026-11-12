@@ -34,7 +34,6 @@ public class PetService {
 		"image/png",
 		"image/webp"
 	);
-	private static final String DEFAULT_PROFILE_IMAGE_KEY = PROFILE_IMAGE_DIR + "/default.png";
 
 	private final PetRepository petRepository;
 	private final PetQrCodeService petQrCodeService;
@@ -111,8 +110,6 @@ public class PetService {
 	}
 
 	private PetResponse toResponse(Pet pet) {
-		String imageKey = pet.getProfileImageKey() != null ? pet.getProfileImageKey() : DEFAULT_PROFILE_IMAGE_KEY;
-
-		return PetResponse.from(pet, s3Service.getUrl(imageKey));
+		return PetResponse.from(pet, s3Service.getUrl(pet.getProfileImageKey()));
 	}
 }

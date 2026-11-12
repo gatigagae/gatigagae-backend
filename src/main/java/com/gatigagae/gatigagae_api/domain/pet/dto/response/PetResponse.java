@@ -42,7 +42,7 @@ public record PetResponse(
 	@Schema(description = "맞춤 실내 온도", example = "23")
 	int temperature,
 
-	@Schema(description = "프로필 사진 주소",
+	@Schema(description = "프로필 사진 주소. 올리지 않았으면 null",
 		example = "https://gatigagae.s3.ap-northeast-2.amazonaws.com/pets/3f2b8c1e-7d4a-4b9e-9c61-2a5f0e8d7b34")
 	String profileImageUrl
 

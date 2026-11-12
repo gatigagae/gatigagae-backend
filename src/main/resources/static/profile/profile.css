@@ -1,0 +1,596 @@
+:root {
+    --primary: #3b5bdb;
+    --primary-dark: #2f4ac0;
+    --primary-soft: rgba(59, 91, 219, 0.16);
+    --text: #111827;
+    --text-sub: #4b5563;
+    --text-muted: #9ca3af;
+    --border: #d1d5db;
+    --line: #eef0f3;
+    --surface-muted: #f3f4f6;
+    --danger: #dc2626;
+    --radius: 12px;
+    color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    background: #fff;
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", Pretendard, "Noto Sans KR",
+    "Malgun Gothic", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    word-break: keep-all;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body.is-locked {
+    overflow: hidden;
+}
+
+button {
+    font: inherit;
+    color: inherit;
+}
+
+.page {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 24px 20px calc(104px + env(safe-area-inset-bottom));
+}
+
+/* 머리말 */
+.brand {
+    margin: 0;
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.title {
+    margin: 2px 0 0;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.subtitle {
+    margin: 4px 0 0;
+    color: var(--text-sub);
+    font-size: 15px;
+}
+
+/* 사진 */
+.photo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.photo-frame {
+    display: grid;
+    place-items: center;
+    width: 100px;
+    height: 100px;
+    border: 2px dashed #c4c8cf;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #fff;
+}
+
+.photo-frame.has-photo {
+    border: 0;
+}
+
+.photo-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-frame.has-photo .photo-placeholder {
+    display: none;
+}
+
+.photo-placeholder {
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+.pill-button {
+    padding: 7px 16px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.pill-button:disabled {
+    color: var(--text-muted);
+    cursor: default;
+}
+
+.photo .field-error {
+    margin: 0;
+    text-align: center;
+}
+
+/* 입력 칸 */
+.section-label {
+    margin: 28px 0 0;
+    color: var(--text-sub);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.field {
+    margin-top: 20px;
+}
+
+.label {
+    display: block;
+    margin-bottom: 8px;
+    color: #374151;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.required,
+.optional {
+    color: var(--text-sub);
+    font-weight: 500;
+}
+
+.input {
+    display: block;
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    outline: none;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+    font-size: 16px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.input::placeholder {
+    color: var(--text-muted);
+}
+
+.input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+.input.is-invalid,
+.select.is-invalid,
+.pill-button.is-invalid {
+    border-color: var(--danger);
+}
+
+.sub-input {
+    margin-top: 8px;
+}
+
+.textarea {
+    height: auto;
+    min-height: 96px;
+    padding: 14px 16px;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+.input-unit {
+    position: relative;
+}
+
+.input-unit .input {
+    padding-right: 52px;
+}
+
+.unit {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    color: var(--text-sub);
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    height: 52px;
+    padding: 0 14px 0 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: #fff;
+    font-size: 16px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.select-value {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.select-value.is-placeholder {
+    color: var(--text-muted);
+}
+
+.select-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: var(--text-sub);
+}
+
+.segmented {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.segment {
+    height: 48px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.segment[aria-pressed="true"] {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: #fff;
+}
+
+.segmented.is-invalid .segment[aria-pressed="false"] {
+    border-color: var(--danger);
+}
+
+.hint {
+    margin: 8px 0 0;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.field-error {
+    margin: 6px 0 0;
+    color: var(--danger);
+    font-size: 13px;
+}
+
+.field-error:empty {
+    display: none;
+}
+
+/* 맞춤 실내 온도 */
+.temperature {
+    margin-top: 28px;
+    padding: 20px;
+    border-radius: 16px;
+    background: var(--surface-muted);
+}
+
+.temperature-title {
+    margin: 0;
+    color: #374151;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.temperature-value {
+    margin: 4px 0 0;
+    color: var(--primary);
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+}
+
+.temperature-value.is-empty {
+    color: var(--text-muted);
+}
+
+.temperature-basis {
+    margin: 8px 0 0;
+    color: var(--text-sub);
+    font-size: 14px;
+}
+
+.temperature-basis:empty {
+    display: none;
+}
+
+.temperature-note {
+    margin: 2px 0 0;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.form-error {
+    margin: 16px 0 0;
+    color: var(--danger);
+    font-size: 14px;
+    text-align: center;
+    white-space: pre-line;
+}
+
+.form-error:empty {
+    display: none;
+}
+
+/* 아래 버튼 */
+.actions {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 12px;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    background: #fff;
+}
+
+.button {
+    height: 54px;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.button.primary {
+    border: 0;
+    background: var(--primary);
+    color: #fff;
+}
+
+.button.primary:active {
+    background: var(--primary-dark);
+}
+
+.button.secondary {
+    border: 1px solid var(--border);
+    background: #fff;
+}
+
+.button:disabled {
+    cursor: default;
+    opacity: 0.5;
+}
+
+.segment:focus-visible,
+.select:focus-visible,
+.button:focus-visible,
+.pill-button:focus-visible,
+.breed-option:focus-visible {
+    outline: 3px solid var(--primary-soft);
+    outline-offset: 2px;
+}
+
+/* 불러오기, 오류, 저장 완료 화면 */
+.state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 70vh;
+    text-align: center;
+}
+
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #e5e7eb;
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.state-icon {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    margin: 0;
+    border-radius: 50%;
+    background: #fef2f2;
+    color: var(--danger);
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.state-icon.is-done {
+    background: #eef2ff;
+    color: var(--primary);
+}
+
+.state-title {
+    margin: 8px 0 0;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.state-text {
+    margin: 0;
+    color: var(--text-sub);
+    font-size: 15px;
+    white-space: pre-line;
+    text-wrap: balance;
+}
+
+.state-button {
+    margin-top: 16px;
+    padding: 0 32px;
+}
+
+/* 견종 선택 시트 */
+.sheet-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: rgba(17, 24, 39, 0.45);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    touch-action: none;
+}
+
+.sheet-backdrop.is-open {
+    opacity: 1;
+}
+
+.sheet {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 11;
+    display: flex;
+    flex-direction: column;
+    max-width: 480px;
+    height: 80vh;
+    height: 80dvh;
+    margin: 0 auto;
+    padding: 8px 20px calc(12px + env(safe-area-inset-bottom));
+    border-radius: 20px 20px 0 0;
+    outline: none;
+    background: #fff;
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+}
+
+.sheet.is-open {
+    transform: translateY(0);
+}
+
+.sheet-handle {
+    flex-shrink: 0;
+    width: 40px;
+    height: 4px;
+    margin: 4px auto 14px;
+    border-radius: 2px;
+    background: #d1d5db;
+}
+
+.sheet-title {
+    margin: 0 0 12px;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.sheet .input {
+    flex-shrink: 0;
+}
+
+.breed-list {
+    flex: 0 1 auto;
+    margin: 8px 0 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+}
+
+.breed-list::-webkit-scrollbar {
+    display: none;
+}
+
+.breed-option {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    width: 100%;
+    padding: 14px 4px;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    background: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+.breed-name {
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.breed-meta {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.breed-check {
+    margin-left: auto;
+    color: var(--primary);
+    font-size: 18px;
+    font-weight: 700;
+    visibility: hidden;
+}
+
+.breed-option[aria-current="true"] .breed-name {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.breed-option[aria-current="true"] .breed-check {
+    visibility: visible;
+}
+
+.breed-empty {
+    margin: 16px 0 4px;
+    color: var(--text-muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sheet,
+    .sheet-backdrop {
+        transition: none;
+    }
+}
