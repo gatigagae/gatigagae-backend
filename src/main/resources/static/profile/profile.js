@@ -559,6 +559,7 @@
         }
         setFieldError('photo', '');
         ui.photoButton.disabled = true;
+        ui.save.disabled = true;
         try {
             setNewPhoto(await shrinkPhoto(file));
         } catch {
@@ -567,6 +568,7 @@
                 : 'jpg, png, webp 사진만 올릴 수 있어요.');
         } finally {
             ui.photoButton.disabled = false;
+            ui.save.disabled = false;
             updateCancelState();
         }
     }
@@ -747,10 +749,9 @@
         try {
             pet = await request(profileUrl(), {method: 'POST', body: buildFormData()});
         } catch (error) {
+            setSaving(false);
             handleSaveError(error);
             return;
-        } finally {
-            setSaving(false);
         }
         showDone(pet);
     }
@@ -803,6 +804,7 @@
     function setSaving(saving) {
         state.saving = saving;
         ui.save.disabled = saving;
+        views.form.inert = saving;
         ui.save.textContent = saving ? '저장 중…' : '저장';
         updateCancelState();
     }
