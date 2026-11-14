@@ -1,7 +1,11 @@
 package com.gatigagae.gatigagae_api.domain.place.dto.response;
 
+import java.util.List;
+
 import com.gatigagae.gatigagae_api.domain.place.entity.Place;
+import com.gatigagae.gatigagae_api.domain.place.entity.enums.AllowedSize;
 import com.gatigagae.gatigagae_api.domain.place.entity.enums.PlaceCategory;
+import com.gatigagae.gatigagae_api.domain.place.entity.enums.PlaceCondition;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -44,11 +48,11 @@ public record PlaceDetailResponse(
 	@Schema(description = "주차 가능 여부. 정보가 없으면 null", example = "true")
 	Boolean parkingAvailable,
 
-	@Schema(description = "함께 들어갈 수 있는 반려동물 크기. 정보가 없으면 null", example = "모두 가능")
-	String allowedSize,
+	@Schema(description = "함께 들어갈 수 있는 반려견 크기. 정보가 없으면 null", example = "SMALL")
+	AllowedSize allowedSize,
 
-	@Schema(description = "반려동물 동반 제한 사항. 제한 사항이 없으면 null", example = "목줄, 배변봉투")
-	String restriction
+	@Schema(description = "반려동물 동반 조건. 없으면 빈 배열", example = "[\"LEASH\", \"POOP_BAG\"]")
+	List<PlaceCondition> restrictions
 ) {
 
 	public static PlaceDetailResponse from(Place place, int distance) {
@@ -66,7 +70,7 @@ public record PlaceDetailResponse(
 			place.getClosedDays(),
 			place.getParkingAvailable(),
 			place.getAllowedSize(),
-			place.getRestriction()
+			place.getRestrictions() == null ? List.of() : place.getRestrictions()
 		);
 	}
 }

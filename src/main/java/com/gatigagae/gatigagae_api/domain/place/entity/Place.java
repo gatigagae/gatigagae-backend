@@ -1,6 +1,10 @@
 package com.gatigagae.gatigagae_api.domain.place.entity;
 
+import java.util.List;
+
+import com.gatigagae.gatigagae_api.domain.place.entity.enums.AllowedSize;
 import com.gatigagae.gatigagae_api.domain.place.entity.enums.PlaceCategory;
+import com.gatigagae.gatigagae_api.domain.place.entity.enums.PlaceCondition;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -60,9 +64,11 @@ public class Place {
 	@Column(name = "parking_available")
 	private Boolean parkingAvailable;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "allowed_size", length = 100)
-	private String allowedSize;
+	private AllowedSize allowedSize;
 
-	@Column(name = "restriction", length = 200)
-	private String restriction;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "restriction")
+	private List<PlaceCondition> restrictions;
 }
