@@ -42,7 +42,7 @@ public record PlaceSearchListResponse(
 		@Schema(description = "경도", example = "126.9734877974")
 		double longitude,
 
-		@Schema(description = "검색 위치에서의 거리(m)", example = "794")
+		@Schema(description = "요청한 위치에서의 거리(m)", example = "794")
 		int distance
 
 	) {

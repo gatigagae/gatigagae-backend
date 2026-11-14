@@ -8,11 +8,15 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gatigagae.gatigagae_api.domain.place.dto.request.PlaceDetailRequest;
 import com.gatigagae.gatigagae_api.domain.place.dto.request.PlaceSearchRequest;
+import com.gatigagae.gatigagae_api.domain.place.dto.response.PlaceDetailResponse;
 import com.gatigagae.gatigagae_api.domain.place.dto.response.PlaceSearchListResponse;
 import com.gatigagae.gatigagae_api.domain.place.entity.Place;
 import com.gatigagae.gatigagae_api.domain.place.entity.enums.PlaceCategory;
+import com.gatigagae.gatigagae_api.domain.place.exception.PlaceErrorCode;
 import com.gatigagae.gatigagae_api.domain.place.repository.PlaceRepository;
+import com.gatigagae.gatigagae_api.global.apipayload.exception.GeneralException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,5 +81,13 @@ public class PlaceService {
 			to < candidates.size(),
 			candidates.size()
 		);
+	}
+
+	@Transactional(readOnly = true)
+	public PlaceDetailResponse getPlaceDetail(Long placeId, PlaceDetailRequest request) {
+		Place place = placeRepository.findById(placeId)
+			.orElseThrow(() -> new GeneralException(PlaceErrorCode.PLACE_NOT_FOUND));
+
+		return PlaceDetailResponse.from(place, distance(request.latitude(), request.longitude(), place));
 	}
 }
