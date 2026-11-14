@@ -35,9 +35,6 @@ app:
   s3:
     bucket: ${S3_BUCKET}
 
-tour-api:
-  service-key: ${TOUR_API_SERVICE_KEY}
-
 swagger:
   server-url: ${SERVER_URL}
   server-description: Production Server

@@ -3,10 +3,13 @@ package com.gatigagae.gatigagae_api.domain.place.controller;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gatigagae.gatigagae_api.domain.place.dto.request.PlaceDetailRequest;
 import com.gatigagae.gatigagae_api.domain.place.dto.request.PlaceSearchRequest;
+import com.gatigagae.gatigagae_api.domain.place.dto.response.PlaceDetailResponse;
 import com.gatigagae.gatigagae_api.domain.place.dto.response.PlaceSearchListResponse;
 import com.gatigagae.gatigagae_api.domain.place.service.PlaceService;
 import com.gatigagae.gatigagae_api.global.apipayload.response.ApiResponse;
@@ -25,7 +28,7 @@ public class PlaceController {
 	private final PlaceService placeService;
 
 	@Operation(summary = "장소 검색",
-		description = "검색어의 장소 종류를 찾아 가까운 3곳을 돌려준다. 종류를 찾지 못하면 category가 null이다. 재탐색은 같은 문장과 좌표에 page를 올려서 검색한다.")
+		description = "검색어의 장소 종류를 찾아 가까운 3곳을 돌려줍니다. 종류를 찾지 못하면 category가 null입니다. 재탐색은 같은 문장과 좌표에 page를 올려서 검색합니다.")
 	@GetMapping("/search")
 	public ApiResponse<PlaceSearchListResponse> searchPlaces(
 		@Valid @ParameterObject @ModelAttribute PlaceSearchRequest request
@@ -33,5 +36,16 @@ public class PlaceController {
 		PlaceSearchListResponse response = placeService.searchPlaces(request);
 
 		return ApiResponse.onSuccess("장소 검색에 성공했습니다.", response);
+	}
+
+	@Operation(summary = "장소 상세 조회", description = "검색 결과의 placeId로 장소 상세 정보를 조회합니다.")
+	@GetMapping("/{placeId}")
+	public ApiResponse<PlaceDetailResponse> getPlaceDetail(
+		@PathVariable Long placeId,
+		@Valid @ParameterObject @ModelAttribute PlaceDetailRequest request
+	) {
+		PlaceDetailResponse response = placeService.getPlaceDetail(placeId, request);
+
+		return ApiResponse.onSuccess("장소 상세 조회에 성공했습니다.", response);
 	}
 }

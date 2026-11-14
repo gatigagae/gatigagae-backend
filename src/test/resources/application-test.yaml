@@ -28,9 +28,6 @@ app:
   s3:
     bucket: test-bucket
 
-tour-api:
-  service-key: test-service-key
-
 swagger:
   server-url: http://localhost:8080
   server-description: Test Server

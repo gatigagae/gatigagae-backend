@@ -41,9 +41,6 @@ app:
   s3:
     bucket: ${S3_BUCKET}
 
-tour-api:
-  service-key: ${TOUR_API_SERVICE_KEY}
-
 swagger:
   server-url: http://localhost:8080
   server-description: Local Server
