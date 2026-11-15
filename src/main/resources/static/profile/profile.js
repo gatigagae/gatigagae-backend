@@ -7,6 +7,11 @@
     const MAX_PHOTO_SIDE = 1280;
     const PREVIEW_DELAY = 300;
     const COAT_LABELS = {DOUBLE: '이중모', SINGLE: '단일모'};
+    const AGE_MAX = 30;
+    const TEMPERATURE_MIN = 16;
+    const TEMPERATURE_MAX = 30;
+    const DEFAULT_TEMPERATURE = 23;  // 추천 온도를 아직 모를 때 직접 설정을 시작하는 온도
+    const PICKER_ROW = 40;           // 온도 한 칸 높이. profile.css의 .picker-option과 같아야 한다
     const MESSAGES = {
         noCode: {
             title: 'QR 코드를 스캔해 주세요',
@@ -44,13 +49,21 @@
         photoImage: $('photo-image'),
         photoButton: $('photo-button'),
         photoInput: $('photo-input'),
+        ageDown: $('age-down'),
+        ageUp: $('age-up'),
         breedButton: $('breed-button'),
         breedValue: $('breed-value'),
         coatType: $('coat-type'),
         brachycephalic: $('brachycephalic'),
-        temperatureTitle: $('temperature-title'),
+        temperatureTabs: $('temperature-tabs'),
+        temperatureTabRecommended: $('temperature-tab-recommended'),
+        temperatureTabCustom: $('temperature-tab-custom'),
+        temperatureRecommended: $('temperature-recommended'),
+        temperatureCustom: $('temperature-custom'),
         temperatureValue: $('temperature-value'),
         temperatureBasis: $('temperature-basis'),
+        temperaturePicker: $('temperature-picker'),
+        recommendedText: $('temperature-recommended-text'),
         formError: $('form-error'),
         cancel: $('cancel-button'),
         save: $('save-button'),
@@ -75,6 +88,7 @@
         age: fields.age,
         weight: fields.weight,
         note: fields.note,
+        customTemperature: ui.temperaturePicker,
     };
 
     const state = {
@@ -83,8 +97,11 @@
         breed: null,
         coatType: null,
         brachycephalic: null,
+        temperatureMode: 'recommended',  // 'recommended': 추천 온도, 'custom': 직접 설정
+        customTemperature: null,         // 직접 설정에서 고른 온도
+        recommendedTemperature: null,    // 지금 값으로 구한 추천 온도
         newPhoto: null,       // 새로 고른 사진 { blob, url }
-        savedPhotoUrl: null,  // 저장돼 있는 사진 주소
+        savedPhotoUrl: null,  // 저장돼 있는 사진 주소. 견종 기본 사진이면 null
         initial: null,        // 처음 불러온 값. 취소하면 이 값으로 되돌린다
         saving: false,
         sheetOpen: false,
@@ -124,6 +141,7 @@
 
     async function init() {
         bindEvents();
+        buildPicker();
         if (!state.code) {
             showMessage(MESSAGES.noCode);
             return;
@@ -152,7 +170,9 @@
 
     function startForm(pet) {
         ui.title.textContent = pet ? '반려견 프로필 수정' : '반려견 프로필 등록';
-        state.savedPhotoUrl = pet?.profileImageUrl ?? null;
+        // 올린 사진이 없으면 서버가 견종 기본 사진 주소를 준다. 이 주소는 저장된 사진으로 보지 않아야 견종을 바꿀 때 사진도 바뀐다
+        const photoUrl = pet?.profileImageUrl ?? null;
+        state.savedPhotoUrl = photoUrl !== breedImageUrl(pet?.breed) ? photoUrl : null;
         state.initial = {
             values: {
                 name: pet?.name ?? '',
@@ -163,15 +183,18 @@
                 age: pet ? String(pet.age) : '',
                 weight: pet?.weight != null ? String(pet.weight) : '',
                 note: pet?.note ?? '',
+                temperatureMode: pet?.customTemperature != null ? 'custom' : 'recommended',
+                customTemperature: pet?.customTemperature ?? null,
             },
-            temperature: pet?.temperature ?? null,
         };
         applyInitial();
         showView('form');
+        fitNote();
+        renderTemperatureMode();  // 화면에 보인 뒤에야 온도 목록을 고른 온도로 스크롤할 수 있다
     }
 
     function applyInitial() {
-        const {values, temperature} = state.initial;
+        const {values} = state.initial;
         fields.name.value = values.name;
         fields.customBreedName.value = values.customBreedName;
         fields.age.value = values.age;
@@ -180,14 +203,18 @@
         state.breed = values.breed;
         state.coatType = values.coatType;
         state.brachycephalic = values.brachycephalic;
+        state.temperatureMode = values.temperatureMode;
+        state.customTemperature = values.customTemperature;
         clearNewPhoto();
-        showPhoto(state.savedPhotoUrl);
+        renderPhoto();
         clearAllErrors();
         renderChoices();
-        cancelPreview();
-        renderTemperatureTitle();
-        renderTemperatureBasis();
-        showTemperature(temperature);
+        renderAgeButtons();
+        fitNote();
+        // 추천 온도는 응답에 없어서 지금 값으로 서버에 물어본다
+        showTemperature(null);
+        updatePreview();
+        renderTemperatureMode();
         updateCancelState();
     }
 
@@ -201,6 +228,8 @@
             age: fields.age.value,
             weight: fields.weight.value,
             note: fields.note.value,
+            temperatureMode: state.temperatureMode,
+            customTemperature: state.temperatureMode === 'custom' ? state.customTemperature : null,
         };
     }
 
@@ -238,7 +267,6 @@
 
         fields.name.addEventListener('input', () => {
             setFieldError('name', '');
-            renderTemperatureTitle();
             updateCancelState();
         });
         fields.customBreedName.addEventListener('input', () => {
@@ -248,8 +276,11 @@
         fields.age.addEventListener('input', () => {
             keepDigits(fields.age);
             setFieldError('age', '');
+            renderAgeButtons();
             onTemperatureInput(PREVIEW_DELAY);
         });
+        ui.ageDown.addEventListener('click', () => stepAge(-1));
+        ui.ageUp.addEventListener('click', () => stepAge(1));
         fields.weight.addEventListener('input', () => {
             keepDecimal(fields.weight);
             setFieldError('weight', '');
@@ -264,11 +295,44 @@
         fields.weight.addEventListener('blur', () => setFieldError('weight', weightMessage()));
         fields.note.addEventListener('input', () => {
             setFieldError('note', '');
+            fitNote();
             updateCancelState();
         });
+        window.addEventListener('resize', fitNote);  // 화면을 돌려 칸 너비가 바뀌면 줄 수도 바뀐다
 
         bindSegment(ui.coatType, 'coatType', (value) => value);
         bindSegment(ui.brachycephalic, 'brachycephalic', (value) => value === 'true');
+
+        ui.temperatureTabs.addEventListener('click', (event) => {
+            const tab = event.target.closest('[role="tab"]');
+            if (tab) {
+                setTemperatureMode(tab.dataset.mode);
+            }
+        });
+        // 탭이 둘이라 왼쪽·오른쪽 화살표는 다른 탭으로 옮긴다
+        ui.temperatureTabs.addEventListener('keydown', (event) => {
+            if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') {
+                return;
+            }
+            event.preventDefault();
+            const tab = state.temperatureMode === 'custom' ? ui.temperatureTabRecommended : ui.temperatureTabCustom;
+            setTemperatureMode(tab.dataset.mode);
+            tab.focus();
+        });
+        ui.temperaturePicker.addEventListener('scroll', onPickerScroll, {passive: true});
+        ui.temperaturePicker.addEventListener('click', (event) => {
+            const option = event.target.closest('[role="option"]');
+            if (option) {
+                selectTemperature(Number(option.dataset.value));
+            }
+        });
+        ui.temperaturePicker.addEventListener('keydown', (event) => {
+            const step = {ArrowUp: -1, ArrowDown: 1}[event.key];
+            if (step) {
+                event.preventDefault();
+                selectTemperature(state.customTemperature + step);
+            }
+        });
 
         ui.breedButton.addEventListener('click', openSheet);
         ui.backdrop.addEventListener('click', closeSheet);
@@ -323,6 +387,27 @@
         }
     }
 
+    // 비어 있으면 0살에서 시작한다
+    function stepAge(delta) {
+        const age = /^\d+$/.test(ageText()) ? Number(ageText()) : 0;
+        fields.age.value = String(Math.min(AGE_MAX, Math.max(0, age + delta)));
+        setFieldError('age', '');
+        renderAgeButtons();
+        onTemperatureInput(PREVIEW_DELAY);
+    }
+
+    function renderAgeButtons() {
+        const age = /^\d+$/.test(ageText()) ? Number(ageText()) : null;
+        ui.ageDown.disabled = age === null || age <= 0;
+        ui.ageUp.disabled = age !== null && age >= AGE_MAX;
+    }
+
+    // 특이사항 칸을 글 길이에 맞게 늘린다. 숨겨져 있을 때는 높이를 잴 수 없어서 화면에 보인 뒤에 다시 부른다
+    function fitNote() {
+        fields.note.style.height = 'auto';
+        fields.note.style.height = `${fields.note.scrollHeight + 2}px`;  // 위아래 테두리 1px씩
+    }
+
     /* ---------- 견종 ---------- */
 
     // 가나다순으로 보여주고 '목록에 없어요'는 맨 아래에 둔다
@@ -337,6 +422,7 @@
 
     const findBreed = (code) => state.breeds.find((breed) => breed.breed === code);
     const breedLabel = (breed) => (breed.breed === OTHER ? '목록에 없어요' : breed.name);
+    const breedImageUrl = (code) => findBreed(code)?.defaultImageUrl ?? null;
 
 
     function selectBreed(code) {
@@ -353,6 +439,7 @@
                 setFieldError(name, '');
             }
             renderChoices();
+            renderPhoto();
             onTemperatureInput(0);
         }
         closeSheet();
@@ -463,7 +550,7 @@
 
     const ageText = () => fields.age.value.trim();
     const weightText = () => fields.weight.value.trim().replace(/\.$/, '');
-    const isValidAge = (age) => /^\d{1,2}$/.test(age) && Number(age) <= 30;
+    const isValidAge = (age) => /^\d{1,2}$/.test(age) && Number(age) <= AGE_MAX;
     const isValidWeight = (weight) => /^\d{1,3}(\.\d{1,2})?$/.test(weight) && Number(weight) > 0;
 
     // 온도를 구하는 데 필요한 값을 다 골랐는지
@@ -512,41 +599,146 @@
         } catch {
             if (previewController === controller) {
                 showTemperature(null);
-                ui.temperatureBasis.textContent = '온도를 불러오지 못했어요. 잠시 후 다시 선택해 주세요.';
+                setTemperatureBasis('온도를 불러오지 못했어요. 잠시 후 다시 선택해 주세요.');
             }
         }
     }
 
     function showTemperature(value) {
+        state.recommendedTemperature = value;
         const empty = value == null;
-        ui.temperatureValue.textContent = empty ? '—' : `${value}℃`;
+        ui.temperatureValue.textContent = empty ? '—' : `${value}°C`;
         ui.temperatureValue.classList.toggle('is-empty', empty);
+        renderRecommendedText();
     }
 
-    function renderTemperatureTitle() {
-        const name = fields.name.value.trim();
-        ui.temperatureTitle.textContent = name ? `${name} 맞춤 실내 온도` : '맞춤 실내 온도';
+    // 서버의 AgeGroup과 같은 기준
+    function ageGroupLabel(age) {
+        if (age < 1) {
+            return '퍼피';
+        }
+        return age >= 9 ? '노견' : '성견';
     }
 
     function renderTemperatureBasis() {
         if (!hasTemperatureInputs()) {
-            ui.temperatureBasis.textContent = '견종, 털 유형, 단두종 여부, 나이를 입력하면 알려드려요.';
+            setTemperatureBasis('견종, 털 유형, 단두종 여부, 나이를 입력하면 알려드려요.');
             return;
         }
         const weight = weightText();
         if (weight && !isValidWeight(weight)) {
-            ui.temperatureBasis.textContent = '몸무게를 다시 확인해 주세요.';
+            setTemperatureBasis('몸무게를 다시 확인해 주세요.');
             return;
         }
         const parts = [
             COAT_LABELS[state.coatType],
             state.brachycephalic ? '단두종' : '단두종 아님',
-            `${Number(ageText())}살`,
+            ageGroupLabel(Number(ageText())),
         ];
         if (weight) {
             parts.push(`${Number(weight)}kg`);
         }
-        ui.temperatureBasis.textContent = `${parts.join(' · ')} 기준`;
+        setTemperatureBasis(`${parts.join(' · ')} 기준`);
+    }
+
+    function setTemperatureBasis(text) {
+        ui.temperatureBasis.textContent = text;
+        renderRecommendedText();
+    }
+
+    // 직접 설정 탭에도 추천 온도와 그 기준을 함께 보여준다
+    function renderRecommendedText() {
+        const basis = ui.temperatureBasis.textContent;
+        const value = state.recommendedTemperature;
+        ui.recommendedText.textContent = value == null ? basis : `추천 ${value}°C · ${basis}`;
+    }
+
+    function setTemperatureMode(mode) {
+        if (state.temperatureMode === mode) {
+            return;
+        }
+        state.temperatureMode = mode;
+        // 처음 직접 설정을 열면 추천 온도에서 시작한다
+        if (mode === 'custom' && state.customTemperature == null) {
+            state.customTemperature = state.recommendedTemperature ?? DEFAULT_TEMPERATURE;
+        }
+        setFieldError('customTemperature', '');
+        renderTemperatureMode();
+        updateCancelState();
+    }
+
+    function renderTemperatureMode() {
+        const custom = state.temperatureMode === 'custom';
+        for (const tab of [ui.temperatureTabRecommended, ui.temperatureTabCustom]) {
+            const selected = tab.dataset.mode === state.temperatureMode;
+            tab.setAttribute('aria-selected', String(selected));
+            tab.tabIndex = selected ? 0 : -1;
+        }
+        ui.temperatureRecommended.hidden = custom;
+        ui.temperatureCustom.hidden = !custom;
+        if (custom) {
+            scrollPicker();
+        }
+    }
+
+    function buildPicker() {
+        const options = [];
+        for (let value = TEMPERATURE_MIN; value <= TEMPERATURE_MAX; value++) {
+            const option = document.createElement('li');
+            option.id = `temperature-${value}`;
+            option.className = 'picker-option';
+            option.setAttribute('role', 'option');
+            option.setAttribute('aria-label', `${value}도`);
+            option.dataset.value = String(value);
+            option.textContent = String(value);
+            options.push(option);
+        }
+        ui.temperaturePicker.replaceChildren(...options);
+    }
+
+    // 고른 온도는 진하게, 바로 옆 온도는 조금 흐리게 보여준다
+    function renderPicker() {
+        const selected = state.customTemperature;
+        for (const option of ui.temperaturePicker.children) {
+            const distance = Math.abs(Number(option.dataset.value) - selected);
+            option.setAttribute('aria-selected', String(distance === 0));
+            option.classList.toggle('is-near', distance === 1);
+        }
+        ui.temperaturePicker.setAttribute('aria-activedescendant', `temperature-${selected}`);
+    }
+
+    // 고른 온도가 가운데 칸에 오도록 바로 옮긴다
+    // 부드럽게 스크롤하면 지나가는 온도가 잠깐씩 고른 값이 되어, 그사이 저장하면 다른 온도가 저장될 수 있다
+    function scrollPicker() {
+        renderPicker();
+        ui.temperaturePicker.scrollTop = (state.customTemperature - TEMPERATURE_MIN) * PICKER_ROW;
+    }
+
+    function selectTemperature(value) {
+        const temperature = Math.min(TEMPERATURE_MAX, Math.max(TEMPERATURE_MIN, value));
+        if (temperature === state.customTemperature) {
+            return;
+        }
+        state.customTemperature = temperature;
+        setFieldError('customTemperature', '');
+        scrollPicker();
+        updateCancelState();
+    }
+
+    // 손으로 굴리면 가운데 칸에 온 온도를 고른 것으로 본다
+    function onPickerScroll() {
+        // 숨겨진 목록은 스크롤 위치가 0으로 읽혀서 건너뛴다
+        if (ui.temperatureCustom.hidden) {
+            return;
+        }
+        const index = Math.round(ui.temperaturePicker.scrollTop / PICKER_ROW);
+        const temperature = Math.min(TEMPERATURE_MAX, Math.max(TEMPERATURE_MIN, TEMPERATURE_MIN + index));
+        if (temperature !== state.customTemperature) {
+            state.customTemperature = temperature;
+            setFieldError('customTemperature', '');
+            renderPicker();
+            updateCancelState();
+        }
     }
 
     /* ---------- 사진 ---------- */
@@ -611,7 +803,7 @@
     function setNewPhoto(blob) {
         clearNewPhoto();
         state.newPhoto = {blob, url: URL.createObjectURL(blob)};
-        showPhoto(state.newPhoto.url);
+        renderPhoto();
     }
 
     function clearNewPhoto() {
@@ -619,6 +811,11 @@
             URL.revokeObjectURL(state.newPhoto.url);
             state.newPhoto = null;
         }
+    }
+
+    // 새로 고른 사진, 저장된 사진, 고른 견종의 기본 사진 순서로 보여준다
+    function renderPhoto() {
+        showPhoto(state.newPhoto?.url ?? state.savedPhotoUrl ?? breedImageUrl(state.breed));
     }
 
     function showPhoto(url) {
@@ -775,6 +972,9 @@
         const note = fields.note.value.trim();
         if (note) {
             data.append('note', note);
+        }
+        if (state.temperatureMode === 'custom') {
+            data.append('customTemperature', String(state.customTemperature));
         }
         if (state.newPhoto) {
             data.append('profileImage', state.newPhoto.blob, 'profile.jpg');

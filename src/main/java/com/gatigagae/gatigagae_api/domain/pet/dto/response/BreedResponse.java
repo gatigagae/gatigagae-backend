@@ -18,11 +18,15 @@ public record BreedResponse(
 	CoatType coatType,
 
 	@Schema(description = "단두종 기본값. 견종만으로 정할 수 없으면 null", example = "false")
-	Boolean brachycephalic
+	Boolean brachycephalic,
+
+	@Schema(description = "견종 기본 사진 주소. 프로필 사진을 올리지 않았으면 이 사진을 보여준다",
+		example = "https://gatigagae.s3.ap-northeast-2.amazonaws.com/breeds/maltese.png")
+	String defaultImageUrl
 
 ) {
-	public static BreedResponse from(Breed breed) {
+	public static BreedResponse from(Breed breed, String defaultImageUrl) {
 		String name = breed.getDisplayName();
-		return new BreedResponse(breed, name, breed.getCoatType(), breed.getBrachycephalic());
+		return new BreedResponse(breed, name, breed.getCoatType(), breed.getBrachycephalic(), defaultImageUrl);
 	}
 }

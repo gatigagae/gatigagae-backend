@@ -67,6 +67,9 @@ public class Pet extends BaseEntity {
 	@Column(name = "note", length = 200)
 	private String note;
 
+	@Column(name = "custom_temperature")
+	private Integer customTemperature;
+
 	@Column(name = "profile_image_key")
 	private String profileImageKey;
 
@@ -82,7 +85,8 @@ public class Pet extends BaseEntity {
 		boolean brachycephalic,
 		int age,
 		BigDecimal weight,
-		String note
+		String note,
+		Integer customTemperature
 	) {
 		this.name = name.strip();
 		this.breed = breed;
@@ -92,6 +96,7 @@ public class Pet extends BaseEntity {
 		this.age = age;
 		this.weight = weight;
 		this.note = blankToNull(note);
+		this.customTemperature = customTemperature;
 	}
 
 	public void changeProfileImage(String profileImageKey) {
