@@ -1,13 +1,18 @@
 :root {
-    --primary: #3b5bdb;
-    --primary-dark: #2f4ac0;
-    --primary-soft: rgba(59, 91, 219, 0.16);
-    --text: #111827;
-    --text-sub: #4b5563;
-    --text-muted: #9ca3af;
-    --border: #d1d5db;
+    --primary: #cc8400;
+    --primary-dark: #b37200;
+    --primary-soft: rgba(204, 132, 0, 0.18);
+    --primary-text: #996300;
+    --primary-text-strong: #7a5000;
+    --primary-surface: #fff4db;
+    --primary-line: #e8d6b2;
+    --text: #2e1e00;
+    --text-sub: #6b6f76;
+    --text-muted: #a3a8b0;
+    --border: #e4e6ea;
     --line: #eef0f3;
-    --surface-muted: #f3f4f6;
+    --background: #f7f8fa;
+    --surface-muted: #f0f1f3;
     --danger: #dc2626;
     --radius: 12px;
     color-scheme: light;
@@ -29,7 +34,7 @@ html {
 
 body {
     margin: 0;
-    background: #fff;
+    background: var(--background);
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", Pretendard, "Noto Sans KR",
     "Malgun Gothic", sans-serif;
@@ -52,20 +57,26 @@ button {
 .page {
     max-width: 480px;
     margin: 0 auto;
-    padding: 24px 20px calc(104px + env(safe-area-inset-bottom));
+    padding: 0 20px calc(104px + env(safe-area-inset-bottom));
 }
 
 /* 머리말 */
+.header {
+    margin: 0 -20px;
+    padding: 20px 20px 18px;
+    background: #fff;
+}
+
 .brand {
     margin: 0;
-    color: var(--primary);
-    font-size: 14px;
+    color: var(--primary-text);
+    font-size: 13px;
     font-weight: 700;
 }
 
 .title {
-    margin: 2px 0 0;
-    font-size: 24px;
+    margin: 4px 0 0;
+    font-size: 22px;
     font-weight: 800;
     letter-spacing: -0.02em;
 }
@@ -73,7 +84,7 @@ button {
 .subtitle {
     margin: 4px 0 0;
     color: var(--text-sub);
-    font-size: 15px;
+    font-size: 13px;
 }
 
 /* 사진 */
@@ -81,23 +92,18 @@ button {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     margin-top: 24px;
 }
 
 .photo-frame {
     display: grid;
     place-items: center;
-    width: 100px;
-    height: 100px;
-    border: 2px dashed #c4c8cf;
+    width: 112px;
+    height: 112px;
     border-radius: 50%;
     overflow: hidden;
-    background: #fff;
-}
-
-.photo-frame.has-photo {
-    border: 0;
+    background: var(--primary-surface);
 }
 
 .photo-image {
@@ -111,18 +117,28 @@ button {
 }
 
 .photo-placeholder {
-    color: var(--text-muted);
+    color: var(--primary-text);
     font-size: 15px;
 }
 
 .pill-button {
-    padding: 7px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 14px;
     border: 1px solid var(--border);
     border-radius: 999px;
     background: #fff;
-    font-size: 14px;
-    font-weight: 600;
+    color: var(--primary-text);
+    font-size: 13px;
+    font-weight: 700;
     cursor: pointer;
+}
+
+.pill-icon {
+    width: 16px;
+    height: 16px;
 }
 
 .pill-button:disabled {
@@ -136,26 +152,22 @@ button {
 }
 
 /* 입력 칸 */
-.section-label {
-    margin: 28px 0 0;
-    color: var(--text-sub);
-    font-size: 14px;
-    font-weight: 600;
-}
-
 .field {
-    margin-top: 20px;
+    margin-top: 24px;
 }
 
 .label {
     display: block;
     margin-bottom: 8px;
-    color: #374151;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
-.required,
+.required {
+    margin-left: 2px;
+    color: var(--primary-text);
+}
+
 .optional {
     color: var(--text-sub);
     font-weight: 500;
@@ -196,12 +208,13 @@ button {
     margin-top: 8px;
 }
 
+/* 한 줄 높이로 시작해서 글이 길어지면 늘어난다 (profile.js의 fitNote) */
 .textarea {
-    height: auto;
-    min-height: 96px;
-    padding: 14px 16px;
+    min-height: 52px;
+    padding: 13px 16px;
+    overflow: hidden;
     line-height: 1.5;
-    resize: vertical;
+    resize: none;
 }
 
 .input-unit {
@@ -261,29 +274,59 @@ button {
 }
 
 .segment {
-    height: 48px;
+    height: 52px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: #fff;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
 }
 
+/* 테두리를 2px로 보이게 하되 글자가 밀리지 않도록 안쪽 그림자로 1px을 더한다 */
 .segment[aria-pressed="true"] {
     border-color: var(--primary);
-    background: var(--primary);
-    color: #fff;
+    box-shadow: inset 0 0 0 1px var(--primary);
+    background: var(--primary-surface);
+    color: var(--primary-text-strong);
+    font-weight: 700;
 }
 
 .segmented.is-invalid .segment[aria-pressed="false"] {
     border-color: var(--danger);
 }
 
+.stepper {
+    display: grid;
+    grid-template-columns: 52px 1fr 52px;
+    gap: 10px;
+}
+
+.stepper-button {
+    display: grid;
+    place-items: center;
+    height: 52px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: #fff;
+    cursor: pointer;
+}
+
+.stepper-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+.stepper-button:disabled {
+    color: var(--text-muted);
+    cursor: default;
+}
+
 .hint {
     margin: 8px 0 0;
-    color: var(--text-muted);
-    font-size: 13px;
+    color: var(--text-sub);
+    font-size: 12px;
 }
 
 .field-error {
@@ -301,20 +344,43 @@ button {
     margin-top: 28px;
     padding: 20px;
     border-radius: 16px;
-    background: var(--surface-muted);
+    background: var(--primary-surface);
 }
 
 .temperature-title {
     margin: 0;
-    color: #374151;
+    color: var(--primary-text-strong);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 12px;
+    border-bottom: 1px solid var(--primary-line);
+}
+
+.tab {
+    height: 40px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--text-sub);
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.tab[aria-selected="true"] {
+    box-shadow: inset 0 -3px 0 var(--primary);
+    color: var(--primary-text-strong);
+    font-weight: 700;
 }
 
 .temperature-value {
-    margin: 4px 0 0;
-    color: var(--primary);
-    font-size: 36px;
+    margin: 16px 0 0;
+    font-size: 32px;
     font-weight: 800;
     line-height: 1.25;
     letter-spacing: -0.02em;
@@ -326,8 +392,8 @@ button {
 
 .temperature-basis {
     margin: 8px 0 0;
-    color: var(--text-sub);
-    font-size: 14px;
+    color: var(--primary-text-strong);
+    font-size: 13px;
 }
 
 .temperature-basis:empty {
@@ -335,9 +401,78 @@ button {
 }
 
 .temperature-note {
-    margin: 2px 0 0;
-    color: var(--text-muted);
-    font-size: 13px;
+    margin: 4px 0 0;
+    color: var(--primary-text-strong);
+    font-size: 12px;
+}
+
+/* 온도 고르기: 가운데 칸에 멈춘 값이 고른 온도 (한 칸 40px, 다섯 칸이 보인다) */
+.picker {
+    position: relative;
+    height: 200px;
+    margin-top: 12px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #fff;
+}
+
+.picker-highlight {
+    position: absolute;
+    top: 80px;
+    right: 8px;
+    left: 8px;
+    height: 40px;
+    border: 2px solid var(--primary);
+    border-radius: 10px;
+    background: var(--primary-surface);
+}
+
+.picker-list {
+    position: relative;
+    height: 100%;
+    margin: 0;
+    padding: 80px 0;
+    overflow-y: auto;
+    outline: none;
+    list-style: none;
+    overscroll-behavior: contain;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+}
+
+.picker-list::-webkit-scrollbar {
+    display: none;
+}
+
+.picker-list:focus-visible {
+    box-shadow: inset 0 0 0 3px var(--primary-soft);
+}
+
+.picker-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    color: #bcbfc1;
+    font-size: 15px;
+    scroll-snap-align: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.picker-option.is-near {
+    color: #898d91;
+    font-size: 18px;
+}
+
+.picker-option[aria-selected="true"] {
+    color: var(--text);
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.picker-option[aria-selected="true"]::after {
+    content: "\00a0°C";
 }
 
 .form-error {
@@ -360,18 +495,18 @@ button {
     left: 0;
     z-index: 5;
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 12px;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
     max-width: 480px;
     margin: 0 auto;
     padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
-    border-top: 1px solid var(--line);
+    border-top: 1px solid var(--border);
     background: #fff;
 }
 
 .button {
-    height: 54px;
-    border-radius: 14px;
+    height: 56px;
+    border-radius: var(--radius);
     font-size: 17px;
     font-weight: 700;
     cursor: pointer;
@@ -388,8 +523,8 @@ button {
 }
 
 .button.secondary {
-    border: 1px solid var(--border);
-    background: #fff;
+    border: 0;
+    background: var(--surface-muted);
 }
 
 .button:disabled {
@@ -401,6 +536,8 @@ button {
 .select:focus-visible,
 .button:focus-visible,
 .pill-button:focus-visible,
+.stepper-button:focus-visible,
+.tab:focus-visible,
 .breed-option:focus-visible {
     outline: 3px solid var(--primary-soft);
     outline-offset: 2px;
@@ -446,7 +583,7 @@ button {
 }
 
 .state-icon.is-done {
-    background: #eef2ff;
+    background: var(--primary-surface);
     color: var(--primary);
 }
 
@@ -573,7 +710,7 @@ button {
 }
 
 .breed-option[aria-current="true"] .breed-name {
-    color: var(--primary);
+    color: var(--primary-text-strong);
     font-weight: 700;
 }
 
