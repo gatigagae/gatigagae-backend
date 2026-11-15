@@ -55,6 +55,11 @@ public record PetSaveRequest(
 	@Size(max = 200, message = "특이사항은 200자 이하여야 합니다.")
 	String note,
 
+	@Schema(description = "직접 설정한 실내 온도. 보내지 않으면 추천 온도를 씁니다.", example = "24")
+	@Min(value = 16, message = "실내 온도는 16도 이상이어야 합니다.")
+	@Max(value = 30, message = "실내 온도는 30도 이하여야 합니다.")
+	Integer customTemperature,
+
 	@Schema(description = "프로필 사진. jpg, png, webp, 10MB 이하.")
 	MultipartFile profileImage
 

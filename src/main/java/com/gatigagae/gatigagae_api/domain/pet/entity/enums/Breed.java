@@ -1,6 +1,7 @@
 package com.gatigagae.gatigagae_api.domain.pet.entity.enums;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -41,5 +42,9 @@ public enum Breed {
 
 	public boolean isObese(BigDecimal weight) {
 		return weight != null && obesityWeight != null && weight.compareTo(BigDecimal.valueOf(obesityWeight)) > 0;
+	}
+
+	public String getDefaultImageKey() {
+		return "breeds/" + name().toLowerCase(Locale.ROOT).replace("_", "-") + ".png";
 	}
 }

@@ -35,16 +35,20 @@
                 <img alt="반려견 사진" class="photo-image" hidden id="photo-image">
                 <span aria-hidden="true" class="photo-placeholder">사진</span>
             </div>
-            <button aria-describedby="error-photo" class="pill-button" id="photo-button" type="button">사진 변경 (촬영 · 앨범)
+            <button aria-describedby="error-photo" class="pill-button" id="photo-button" type="button">
+                <svg aria-hidden="true" class="pill-icon" viewBox="0 0 20 20">
+                    <path d="M3.5 7.2c0-.9.7-1.6 1.6-1.6h1.7l1.3-1.9h3.8l1.3 1.9h1.7c.9 0 1.6.7 1.6 1.6v7.2c0 .9-.7 1.6-1.6 1.6H5.1c-.9 0-1.6-.7-1.6-1.6z"
+                          fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="1.6"/>
+                    <circle cx="10" cy="10.6" fill="none" r="2.7" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
+                프로필 변경
             </button>
             <input accept="image/jpeg,image/png,image/webp" hidden id="photo-input" type="file">
             <p class="field-error" id="error-photo"></p>
         </section>
 
-        <p class="section-label">기본 정보</p>
-
         <div class="field">
-            <label class="label" for="name">이름 <span class="required">*</span></label>
+            <label class="label" for="name">이름<span class="required">*</span></label>
             <input aria-describedby="error-name" autocomplete="off" class="input" enterkeyhint="done" id="name"
                    maxlength="50"
                    type="text">
@@ -52,8 +56,9 @@
         </div>
 
         <div class="field">
-            <span class="label" id="breed-label">견종 <span class="required">*</span></span>
-            <button aria-describedby="error-breed" aria-haspopup="dialog" aria-labelledby="breed-label breed-value"
+            <span class="label" id="breed-label">견종<span class="required">*</span></span>
+            <button aria-describedby="breed-hint error-breed" aria-haspopup="dialog"
+                    aria-labelledby="breed-label breed-value"
                     class="select"
                     id="breed-button" type="button">
                 <span class="select-value is-placeholder" id="breed-value">견종을 골라 주세요</span>
@@ -66,39 +71,55 @@
                    class="input sub-input" enterkeyhint="done"
                    hidden id="custom-breed-name" maxlength="30"
                    placeholder="견종 이름 직접 입력 (선택) 예: 믹스견" type="text">
+            <p class="hint" id="breed-hint">목록에 없으면 직접 입력할 수 있어요</p>
             <p class="field-error" id="error-breed"></p>
             <p class="field-error" id="error-customBreedName"></p>
         </div>
 
         <div class="field">
-            <span class="label" id="coat-type-label">털 유형 <span class="required">*</span></span>
-            <div aria-describedby="error-coatType" aria-labelledby="coat-type-label" class="segmented" id="coat-type"
+            <span class="label" id="coat-type-label">털 유형<span class="required">*</span></span>
+            <div aria-describedby="coat-type-hint error-coatType" aria-labelledby="coat-type-label" class="segmented"
+                 id="coat-type"
                  role="group">
                 <button aria-pressed="false" class="segment" data-value="DOUBLE" type="button">이중모</button>
                 <button aria-pressed="false" class="segment" data-value="SINGLE" type="button">단일모</button>
             </div>
+            <p class="hint" id="coat-type-hint">이중모: 털이 두 겹 · 단일모: 털이 한 겹</p>
             <p class="field-error" id="error-coatType"></p>
         </div>
 
         <div class="field">
-            <span class="label" id="brachycephalic-label">단두종 여부 <span class="required">*</span></span>
-            <div aria-describedby="error-brachycephalic" aria-labelledby="brachycephalic-label" class="segmented"
+            <span class="label" id="brachycephalic-label">단두종 여부<span class="required">*</span></span>
+            <div aria-describedby="brachycephalic-hint error-brachycephalic" aria-labelledby="brachycephalic-label"
+                 class="segmented"
                  id="brachycephalic"
                  role="group">
-                <button aria-pressed="false" class="segment" data-value="false" type="button">아니요</button>
                 <button aria-pressed="false" class="segment" data-value="true" type="button">예</button>
+                <button aria-pressed="false" class="segment" data-value="false" type="button">아니요</button>
             </div>
-            <p class="hint">이중모: 털이 두 겹 · 단두종: 코가 납작한 견종</p>
+            <p class="hint" id="brachycephalic-hint">단두종: 코가 납작한 견종 (불독, 퍼그 등)</p>
             <p class="field-error" id="error-brachycephalic"></p>
         </div>
 
         <div class="field">
-            <label class="label" for="age">나이 <span class="required">*</span></label>
-            <div class="input-unit">
-                <input aria-describedby="age-hint error-age" autocomplete="off" class="input" enterkeyhint="done"
-                       id="age" inputmode="numeric"
-                       maxlength="2" type="text">
-                <span aria-hidden="true" class="unit">살</span>
+            <label class="label" for="age">나이<span class="required">*</span></label>
+            <div class="stepper">
+                <button aria-label="나이 한 살 줄이기" class="stepper-button" id="age-down" type="button">
+                    <svg aria-hidden="true" viewBox="0 0 20 20">
+                        <path d="M5 10h10" stroke="currentColor" stroke-linecap="round" stroke-width="2"/>
+                    </svg>
+                </button>
+                <div class="input-unit">
+                    <input aria-describedby="error-age" autocomplete="off" class="input" enterkeyhint="done"
+                           id="age" inputmode="numeric"
+                           maxlength="2" type="text">
+                    <span aria-hidden="true" class="unit">살</span>
+                </div>
+                <button aria-label="나이 한 살 늘리기" class="stepper-button" id="age-up" type="button">
+                    <svg aria-hidden="true" viewBox="0 0 20 20">
+                        <path d="M5 10h10M10 5v10" stroke="currentColor" stroke-linecap="round" stroke-width="2"/>
+                    </svg>
+                </button>
             </div>
             <p class="field-error" id="error-age"></p>
         </div>
@@ -117,14 +138,38 @@
         <div class="field">
             <label class="label" for="note">특이사항 <span class="optional">(선택)</span></label>
             <textarea aria-describedby="error-note" class="input textarea" id="note" maxlength="200"
-                      placeholder="예: 차멀미가 있어요, 더위에 약해요" rows="3"></textarea>
+                      placeholder="예: 차멀미가 있어요, 더위에 약해요" rows="1"></textarea>
             <p class="field-error" id="error-note"></p>
         </div>
 
         <section aria-labelledby="temperature-title" class="temperature">
             <p class="temperature-title" id="temperature-title">맞춤 실내 온도</p>
-            <p aria-live="polite" class="temperature-value is-empty" id="temperature-value">—</p>
-            <p class="temperature-basis" id="temperature-basis"></p>
+            <div aria-labelledby="temperature-title" class="tabs" id="temperature-tabs" role="tablist">
+                <button aria-controls="temperature-recommended" aria-selected="true" class="tab"
+                        data-mode="recommended" id="temperature-tab-recommended" role="tab" type="button">추천 온도
+                </button>
+                <button aria-controls="temperature-custom" aria-selected="false" class="tab" data-mode="custom"
+                        id="temperature-tab-custom" role="tab" tabindex="-1" type="button">직접 설정
+                </button>
+            </div>
+
+            <div aria-labelledby="temperature-tab-recommended" id="temperature-recommended"
+                 role="tabpanel">
+                <p aria-live="polite" class="temperature-value is-empty" id="temperature-value">—</p>
+                <p class="temperature-basis" id="temperature-basis"></p>
+            </div>
+
+            <div aria-labelledby="temperature-tab-custom" hidden id="temperature-custom"
+                 role="tabpanel">
+                <div class="picker">
+                    <div aria-hidden="true" class="picker-highlight"></div>
+                    <ul aria-describedby="temperature-recommended-text error-customTemperature" aria-label="실내 온도"
+                        class="picker-list" id="temperature-picker" role="listbox" tabindex="0"></ul>
+                </div>
+                <p class="temperature-basis" id="temperature-recommended-text"></p>
+                <p class="field-error" id="error-customTemperature"></p>
+            </div>
+
             <p class="temperature-note">저장하면 차량이 정차 중일 때 이 온도로 공조를 맞춰요.</p>
         </section>
 
