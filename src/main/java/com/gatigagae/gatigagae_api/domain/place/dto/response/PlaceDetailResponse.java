@@ -70,7 +70,7 @@ public record PlaceDetailResponse(
 			place.getClosedDays(),
 			place.getParkingAvailable(),
 			place.getAllowedSize(),
-			place.getRestrictions() == null ? List.of() : place.getRestrictions()
+			place.getRestrictions()
 		);
 	}
 }

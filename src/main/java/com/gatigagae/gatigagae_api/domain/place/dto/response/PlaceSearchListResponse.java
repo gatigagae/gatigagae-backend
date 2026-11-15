@@ -3,7 +3,9 @@ package com.gatigagae.gatigagae_api.domain.place.dto.response;
 import java.util.List;
 
 import com.gatigagae.gatigagae_api.domain.place.entity.Place;
+import com.gatigagae.gatigagae_api.domain.place.entity.enums.AllowedSize;
 import com.gatigagae.gatigagae_api.domain.place.entity.enums.PlaceCategory;
+import com.gatigagae.gatigagae_api.domain.place.entity.enums.PlaceCondition;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -43,7 +45,13 @@ public record PlaceSearchListResponse(
 		double longitude,
 
 		@Schema(description = "요청한 위치에서의 거리(m)", example = "794")
-		int distance
+		int distance,
+
+		@Schema(description = "함께 들어갈 수 있는 반려견 크기. 정보가 없으면 null", example = "SMALL")
+		AllowedSize allowedSize,
+
+		@Schema(description = "반려동물 동반 조건. 없으면 빈 배열", example = "[\"LEASH\", \"POOP_BAG\"]")
+		List<PlaceCondition> restrictions
 
 	) {
 
@@ -53,7 +61,9 @@ public record PlaceSearchListResponse(
 				place.getName(),
 				place.getLatitude(),
 				place.getLongitude(),
-				distance
+				distance,
+				place.getAllowedSize(),
+				place.getRestrictions()
 			);
 		}
 
