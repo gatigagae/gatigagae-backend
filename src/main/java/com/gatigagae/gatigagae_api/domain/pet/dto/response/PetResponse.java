@@ -39,10 +39,13 @@ public record PetResponse(
 	@Schema(description = "특이사항. 입력하지 않았으면 null", example = "차멀미가 있어요")
 	String note,
 
-	@Schema(description = "맞춤 실내 온도", example = "23")
+	@Schema(description = "차량이 맞출 실내 온도. 직접 설정한 온도가 있으면 그 온도, 없으면 추천 온도", example = "24")
 	int temperature,
 
-	@Schema(description = "프로필 사진 주소. 올리지 않았으면 null",
+	@Schema(description = "직접 설정한 실내 온도. 설정하지 않았으면 null", example = "24")
+	Integer customTemperature,
+
+	@Schema(description = "프로필 사진 주소. 올리지 않았으면 견종 기본 사진 주소",
 		example = "https://gatigagae.s3.ap-northeast-2.amazonaws.com/pets/3f2b8c1e-7d4a-4b9e-9c61-2a5f0e8d7b34")
 	String profileImageUrl
 
@@ -55,6 +58,10 @@ public record PetResponse(
 		TemperatureRule temperatureRule = TemperatureRule.of(pet.getBreed(), pet.getCoatType(),
 			pet.getBrachycephalic(), pet.getAge(), pet.getWeight());
 
+		int temperature = pet.getCustomTemperature() != null
+			? pet.getCustomTemperature()
+			: temperatureRule.getTemperature();
+
 		return new PetResponse(
 			pet.getName(),
 			pet.getBreed(),
@@ -65,7 +72,8 @@ public record PetResponse(
 			pet.getAge(),
 			pet.getWeight(),
 			pet.getNote(),
-			temperatureRule.getTemperature(),
+			temperature,
+			pet.getCustomTemperature(),
 			profileImageUrl
 		);
 	}

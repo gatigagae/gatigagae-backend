@@ -41,7 +41,7 @@ public class PetService {
 
 	public List<BreedResponse> getBreeds() {
 		return Arrays.stream(Breed.values())
-			.map(BreedResponse::from)
+			.map(breed -> BreedResponse.from(breed, s3Service.getUrl(breed.getDefaultImageKey())))
 			.toList();
 	}
 
@@ -81,7 +81,8 @@ public class PetService {
 			request.brachycephalic(),
 			request.age(),
 			request.weight(),
-			request.note()
+			request.note(),
+			request.customTemperature()
 		);
 		if (request.profileImage() != null && !request.profileImage().isEmpty()) {
 			uploadProfileImage(pet, request.profileImage());
@@ -110,6 +111,10 @@ public class PetService {
 	}
 
 	private PetResponse toResponse(Pet pet) {
-		return PetResponse.from(pet, s3Service.getUrl(pet.getProfileImageKey()));
+		String imageKey = pet.getProfileImageKey() != null
+			? pet.getProfileImageKey()
+			: pet.getBreed().getDefaultImageKey();
+
+		return PetResponse.from(pet, s3Service.getUrl(imageKey));
 	}
 }
