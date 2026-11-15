@@ -71,4 +71,8 @@ public class Place {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "restriction")
 	private List<PlaceCondition> restrictions;
+
+	public List<PlaceCondition> getRestrictions() {
+		return restrictions == null ? List.of() : restrictions;
+	}
 }
